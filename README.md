@@ -20,3 +20,8 @@ Instructions:
  3. Press F11 to open the menu
  4. Select and configure a Euphoria message
  5. Click "Sent To..." to send it to a ped
+
+ 
+# Releases:
+ 
+Get [the latest release](https://github.com/pnwparksfan/RageEuphoriaTester/releases) if you just want a ready-to-go DLL
