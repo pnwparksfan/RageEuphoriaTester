@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-
+using System.Drawing;
 using RAGENativeUI;
 using RAGENativeUI.Elements;
 using Rage;
@@ -35,7 +35,32 @@ namespace RageEuphoriaTester
             if (Message == null) return;
 
             Game.LogTrivial("Setting up menu for " + Message.Name);
-            MenuPage = new UIMenu(Message.Name, "");
+            
+            /*
+            string desc = "";
+            var descAttr = Message.GetType().GetCustomAttributes(typeof(EuphoriaDetailAttribute), false).Cast<EuphoriaDetailAttribute>().FirstOrDefault();
+            if (descAttr != null)
+                desc = descAttr.Description;
+                */
+
+            MenuPage = new UIMenu("RAGE Euphoria Tester", Message.Name);
+
+            Game.LogTrivial("  Adding SendTo and Reset items");
+            SendTo = new UIMenuItem("Send To...", "Send to the selected ped");
+            Reset = new UIMenuItem("Reset", "Resets the message");
+            MenuPage.AddItem(SendTo);
+            MenuPage.AddItem(Reset);
+            SendTo.Activated += On_SendTo;
+            Reset.Activated += On_Reset;
+            SendTo.BackColor = Color.DarkGreen;
+            SendTo.ForeColor = Color.White;
+            SendTo.HighlightedBackColor = Color.LightGreen;
+            SendTo.HighlightedForeColor = Color.Black;
+            Reset.BackColor = Color.DarkOliveGreen;
+            Reset.ForeColor = Color.White;
+            Reset.HighlightedBackColor = Color.LightGreen;
+            Reset.HighlightedForeColor = Color.Black;
+
             var properties = Message.GetType().GetProperties();
 
             foreach (var property in properties)
@@ -88,18 +113,14 @@ namespace RageEuphoriaTester
                 }   
             }
 
-            Game.LogTrivial("  Adding SendTo and Reset items");
-            SendTo = new UIMenuItem("Send To...", "Send to the selected ped");
-            Reset = new UIMenuItem("Reset", "Resets the message");
-            MenuPage.AddItem(SendTo);
-            MenuPage.AddItem(Reset);
-            SendTo.Activated += On_SendTo;
-            Reset.Activated += On_Reset;
+
 
             OpenMenu = new UIMenuItem(Message.Name);
             Menus.MessageMenu.AddItem(OpenMenu);
             Menus.MessageMenu.BindMenuToItem(MenuPage, OpenMenu);
             Menus.menuPool.Add(MenuPage);
+
+            MenuPage.RefreshIndex();
         }
 
         private void On_Reset(UIMenu sender, UIMenuItem selectedItem)
@@ -111,7 +132,7 @@ namespace RageEuphoriaTester
         {
             if(Menus.TargetPed)
             {
-                Game.DisplaySubtitle("Sending message to ped");
+                Game.DisplaySubtitle("Sending message to ped", 6000);
                 Game.LogTrivial("Sending " + Message.Name + " to ped " + Menus.TargetPed.Model.Name);
                 foreach (PropertyInfo prop in Message.GetType().GetProperties())
                 {

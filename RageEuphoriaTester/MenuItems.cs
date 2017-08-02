@@ -113,10 +113,10 @@ namespace RAGENativeUI.Elements
         protected override bool ValidateInput(string input, ref Vector3 value)
         {
             string[] inputs = input.Split(',');
-            if (input.Length != 3) return false;
+            if (inputs.Length != 3) return false;
 
             float[] outputs = new float[3];
-            bool success = false;
+            bool success = true;
             for (int i = 0; i < inputs.Length; i++)
             {
                 success = success && float.TryParse(inputs[i], out outputs[i]);
